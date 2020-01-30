@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import Select
 from sound_play import sound_play
 import json
 import time
+import datetime
 
 
 def acp_api_send_request(driver, message_type, data={}):
@@ -33,10 +34,15 @@ def t1(maxt=3000):
     time.sleep(randint(100, maxt) / 1000)
 
 
-if __name__ == '__main__':
+def now_date_txt():
+    return str(datetime.datetime.now())
 
+
+if __name__ == '__main__':
+    flag = 0
     while True:
         try:
+            print(f"Start {now_date_txt()}")
             # Инциируем объект опций для Хрома, чтобы иметь возможность подключить расширение
             options = webdriver.ChromeOptions()
             # Ссылка на CRX или ZIP или ZPI файл плагина, который мы скачали ранее
@@ -108,16 +114,25 @@ if __name__ == '__main__':
 
             try:
                 txt = driver.find_element_by_xpath("//p[contains(.,'En este momento no hay citas disponibles.En breve, la Oficina pondrá a su disposición nuevas citas.')]").text
+                print(f"{now_date_txt()} - Отказ. Сит нет!")
+                flag = 4
             except:
                 txt = ''
+                flag += 1
 
             if len(txt) == 0:
                 print('sound')
                 sound_play()
                 break
         except:
+            flag += 1
             pass
-        driver.close()
-        tm = randint(200, 1000)
-        print(f"Пауза {tm // 60} минут {tm % 60} секунд")
-        time.sleep(tm)
+        try:
+            driver.close()
+        except:
+            pass
+        if flag>2:
+            flag = 0
+            tm = randint(300, 900)
+            print(f"Пауза {tm // 60} минут {tm % 60} секунд")
+            time.sleep(tm)
