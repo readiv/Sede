@@ -121,8 +121,11 @@ if __name__ == '__main__':
                 flag += 1
 
             if len(txt) == 0:
-                print('sound')
                 sound_play()
+                print('input exit for exit')
+                s = input()
+                while s != "exit":
+                    s = input()
                 break
         except:
             flag += 1
@@ -131,8 +134,8 @@ if __name__ == '__main__':
             driver.close()
         except:
             pass
-        if flag>2:
+        if flag > 2:
             flag = 0
-            tm = randint(300, 900)
+            tm = randint(300, 600)
             print(f"Пауза {tm // 60} минут {tm % 60} секунд")
             time.sleep(tm)
